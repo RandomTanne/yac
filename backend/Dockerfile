@@ -1,6 +1,6 @@
 FROM gradle:jdk21-alpine AS builder
 WORKDIR /app
-COPY backend .
+COPY . .
 RUN gradle bootJar
 
 FROM eclipse-temurin:21-alpine
