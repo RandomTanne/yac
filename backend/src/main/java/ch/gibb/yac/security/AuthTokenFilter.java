@@ -15,11 +15,10 @@ import java.io.IOException;
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
-    private JwtUtil jwtUtils;
+    private final JwtUtil jwtUtils;
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public AuthTokenFilter() {}
 
     public AuthTokenFilter(JwtUtil jwtUtils, CustomUserDetailsService userDetailsService) {
         this.jwtUtils = jwtUtils;
