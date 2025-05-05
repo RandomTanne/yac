@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -47,11 +49,11 @@ public class AuthController {
 
         Person newUser = new Person(
                 null,
-                person.getUsername(),
+                UUID.randomUUID().toString(),
                 encoder.encode(person.getPassword())
         );
 
         personRepository.save(newUser);
-        return "User registered successfully!";
+        return newUser.getUsername();
     }
 }
