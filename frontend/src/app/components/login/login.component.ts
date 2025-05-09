@@ -2,13 +2,17 @@ import {Component} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
+import {NgClass} from '@angular/common';
+import {FormErrorComponent} from '../../form-error/form-error.component';
 
 @Component({
   selector: 'app-login',
   imports: [
     RouterLink,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass,
+    FormErrorComponent
   ],
   templateUrl: './login.component.html',
   standalone: true,
@@ -16,14 +20,14 @@ import {AuthService} from '../../services/auth.service';
 })
 
 export class LoginComponent {
-  loginForm = new FormGroup({
-    username: new FormControl('', Validators.required),
-    password: new FormControl('', [Validators.required, Validators.minLength(12)])
-  })
-
   constructor(private authService: AuthService) {}
 
+  loginForm = new FormGroup({
+    username: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+    password: new FormControl<string>('', { nonNullable: true, validators: Validators.required })
+  })
+
   onSubmit() {
-    this.authService.login({ username: this.loginForm.controls.username.value!, password: this.loginForm.controls.username.value! }).subscribe();
+    this.authService.login(this.loginForm.getRawValue()).subscribe();
   }
 }

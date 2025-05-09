@@ -13,7 +13,9 @@
           formControlName="username"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          [ngClass]="{'focus:ring-red-700': loginForm.controls.username.invalid && (loginForm.controls.username.dirty || !loginForm.controls.username.untouched) }"
         >
+        <app-form-error [control]="loginForm.get('username')" message="Username is required" error="required"></app-form-error>
       </div>
 
       <div>
@@ -24,14 +26,16 @@
           name="password"
           formControlName="password"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          [ngClass]="{'focus:ring-red-700': loginForm.controls.password.invalid && (loginForm.controls.password.dirty || !loginForm.controls.password.untouched) }"
         >
+        <app-form-error [control]="loginForm.get('password')" message="Password is required" error="required"></app-form-error>
       </div>
     </div>
 
     <button
       type="submit"
-      class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-      [disabled]="!loginForm.valid"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-200 text-white py-2 rounded-lg transition-colors"
+      [disabled]="loginForm.untouched || loginForm.invalid"
     >
       Submit
     </button>

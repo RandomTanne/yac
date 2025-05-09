@@ -2,26 +2,30 @@ import { Component } from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
+import {NgClass} from '@angular/common';
+import {FormErrorComponent} from '../../form-error/form-error.component';
 
 @Component({
   selector: 'app-signup',
   imports: [
     RouterLink,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass,
+    FormErrorComponent
   ],
   templateUrl: './signup.component.html',
   standalone: true,
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
-  signupForm = new FormGroup({
-    password: new FormControl('', [Validators.required, Validators.minLength(12)])
-  })
-
   constructor(private authService: AuthService) {}
 
+  signupForm = new FormGroup({
+    password: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(12)] })
+  })
+
   onSubmit() {
-    this.authService.signup({ password: this.signupForm.controls.password.value! }).subscribe();
+    this.authService.signup(this.signupForm.getRawValue()).subscribe();
   }
 }
