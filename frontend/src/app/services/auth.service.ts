@@ -8,20 +8,15 @@ import {Injectable} from '@angular/core';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  isLoggedIn = false;
-
   login(userDetails: { username: string; password: string }): Observable<boolean> {
     return this.http.post('http://localhost:8080/api/auth/signin', userDetails, { responseType: 'text' })
       .pipe(
         map(response => {
           localStorage.setItem('JWT_Token', response);
-          this.isLoggedIn = true;
           return true;
         }),
         catchError(error => {
-          console.log(error);
-          this.isLoggedIn = false;
-          return of(false);
+          return of(error);
         })
       );
   }
@@ -34,19 +29,16 @@ export class AuthService {
           return true;
         }),
         catchError(error => {
-          console.log(error);
-          this.isLoggedIn = false;
-          return of(false);
+          return of(error);
         })
       );
   }
 
   logout(): void {
     localStorage.removeItem('JWT_Token');
-    this.isLoggedIn = false;
   }
 
   isAuthenticated(): boolean {
-    return this.isLoggedIn;
+    return !!localStorage.getItem('JWT_Token')
   }
 }

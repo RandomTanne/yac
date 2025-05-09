@@ -28,4 +28,6 @@ export class SignupComponent {
   onSubmit() {
     this.authService.signup(this.signupForm.getRawValue()).subscribe();
   }
+
+  protected readonly localStorage = localStorage;
 }
