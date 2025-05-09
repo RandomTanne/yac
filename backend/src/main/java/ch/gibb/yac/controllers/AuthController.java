@@ -1,8 +1,10 @@
 package ch.gibb.yac.controllers;
 
+import ch.gibb.yac.dtos.SignupDTO;
 import ch.gibb.yac.models.Person;
 import ch.gibb.yac.repositories.PersonRepository;
 import ch.gibb.yac.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -31,8 +34,11 @@ public class AuthController {
         this.encoder = encoder;
     }
 
+    @Value("${jwt.expiration}")
+    private long expiration;
+
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody Person person) {
+    public ResponseEntity<SignupDTO> authenticateUser(@RequestBody Person person) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         person.getUsername(),
@@ -40,7 +46,7 @@ public class AuthController {
                 )
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return new ResponseEntity<>(jwtUtils.generateToken(userDetails.getUsername()), HttpStatus.OK);
+        return new ResponseEntity<>(new SignupDTO(jwtUtils.generateToken(userDetails.getUsername()), new Date().getTime() + expiration), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
