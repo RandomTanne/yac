@@ -16,8 +16,8 @@ export class AuthService {
           localStorage.setItem('JWT_Expiration', response.expiration);
           return true;
         }),
-        catchError(error => {
-          return of(error);
+        catchError(() => {
+          return of(false);
         })
       );
   }

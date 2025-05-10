@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {NgClass} from '@angular/common';
@@ -20,14 +20,21 @@ import {FormErrorComponent} from '../../form-error/form-error.component';
 })
 
 export class LoginComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   loginForm = new FormGroup({
     username: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     password: new FormControl<string>('', { nonNullable: true, validators: Validators.required })
   })
 
+  loginSuccessful = true;
+
   onSubmit() {
-    this.authService.login(this.loginForm.getRawValue()).subscribe();
+    this.authService.login(this.loginForm.getRawValue()).subscribe((response:boolean) => {
+      this.loginSuccessful = response;
+      if(this.loginSuccessful) {
+        this.router.navigate(['/'])
+      }
+    });
   }
 }

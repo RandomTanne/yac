@@ -4,6 +4,10 @@
   @if(!localStorage.getItem('ASSIGNED_USERNAME')) {
     <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Create an account by entering a password</h3>
 
+    @if (!loginSuccessful) {
+      <div class="text-sm text-red-700">Something went wrong while signing up. Please try again.</div>
+    }
+
     <form class="space-y-6" (ngSubmit)="onSubmit()" [formGroup]="signupForm">
       <div>
         <label for="password" class="block text-sm font-medium text-gray-600 mb-1">Password</label>
