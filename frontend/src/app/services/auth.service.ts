@@ -17,7 +17,9 @@ export class AuthService {
       .post<{
         jwt: string;
         expiration: string;
-      }>('http://localhost:8080/api/auth/signin', userDetails, { responseType: 'json' })
+      }>('http://localhost:8080/api/auth/signin', userDetails, {
+        responseType: 'json',
+      })
       .pipe(
         map((response) => {
           localStorage.setItem('JWT_Token', response.jwt);
