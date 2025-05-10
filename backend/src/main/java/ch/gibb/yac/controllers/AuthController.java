@@ -1,14 +1,19 @@
 package ch.gibb.yac.controllers;
 
+import ch.gibb.yac.dtos.SignupDTO;
 import ch.gibb.yac.models.Person;
 import ch.gibb.yac.repositories.PersonRepository;
 import ch.gibb.yac.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -29,8 +34,11 @@ public class AuthController {
         this.encoder = encoder;
     }
 
+    @Value("${jwt.expiration}")
+    private long expiration;
+
     @PostMapping("/signin")
-    public String authenticateUser(@RequestBody Person person) {
+    public ResponseEntity<SignupDTO> authenticateUser(@RequestBody Person person) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         person.getUsername(),
@@ -38,13 +46,16 @@ public class AuthController {
                 )
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtUtils.generateToken(userDetails.getUsername());
+        return new ResponseEntity<>(new SignupDTO(jwtUtils.generateToken(userDetails.getUsername()), new Date().getTime() + expiration), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody Person person) {
+    public ResponseEntity<String> registerUser(@RequestBody Person person) {
         if (personRepository.existsByUsername(person.getUsername())) {
-            return "Error: Username is already taken!";
+            return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
+        }
+        if(person.getPassword().length() < 12) {
+            return new ResponseEntity<>("Error: Password must be at least 12 characters long!", HttpStatus.BAD_REQUEST);
         }
 
         Person newUser = new Person(
@@ -54,6 +65,6 @@ public class AuthController {
         );
 
         personRepository.save(newUser);
-        return newUser.getUsername();
+        return new ResponseEntity<>(newUser.getUsername(), HttpStatus.OK);
     }
 }
