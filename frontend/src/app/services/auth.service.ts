@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {Injectable} from '@angular/core';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,18 @@ export class AuthService {
           return of(error);
         })
       );
+  }
+
+  getUsername() {
+    if(this.isAuthenticated()) {
+      try {
+        const decoded = jwtDecode<{sub: string}>(localStorage.getItem('JWT_Token')!);
+        return decoded.sub;
+      } catch (err) {
+        console.error('Invalid token', err);
+      }
+    }
+    return null;
   }
 
   logout(): void {

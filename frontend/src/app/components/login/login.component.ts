@@ -32,9 +32,6 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.loginForm.getRawValue()).subscribe((response:boolean) => {
       this.loginSuccessful = response;
-      if(this.loginSuccessful) {
-        this.router.navigate(['/'])
-      }
     });
   }
 }
