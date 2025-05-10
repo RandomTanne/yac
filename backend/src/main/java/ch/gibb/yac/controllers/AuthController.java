@@ -54,6 +54,9 @@ public class AuthController {
         if (personRepository.existsByUsername(person.getUsername())) {
             return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
         }
+        if(person.getPassword().length() < 12) {
+            return new ResponseEntity<>("Error: Password must be at least 12 characters long!", HttpStatus.BAD_REQUEST);
+        }
 
         Person newUser = new Person(
                 null,

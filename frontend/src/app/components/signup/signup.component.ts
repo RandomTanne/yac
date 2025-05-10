@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -27,7 +27,6 @@ import { FormErrorComponent } from '../../form-error/form-error.component';
 export class SignupComponent {
   constructor(
     private authService: AuthService,
-    private router: Router,
   ) {}
 
   signupForm = new FormGroup({
@@ -37,13 +36,13 @@ export class SignupComponent {
     }),
   });
 
-  loginSuccessful = true;
+  signupSuccessful = true;
 
   onSubmit() {
     this.authService
       .signup(this.signupForm.getRawValue())
       .subscribe((response) => {
-        this.loginSuccessful = response;
+        this.signupSuccessful = response;
       });
   }
 

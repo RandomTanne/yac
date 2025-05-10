@@ -42,8 +42,8 @@ export class AuthService {
           localStorage.setItem('ASSIGNED_USERNAME', response);
           return true;
         }),
-        catchError((error) => {
-          return of(error);
+        catchError(() => {
+          return of(false);
         }),
       );
   }
