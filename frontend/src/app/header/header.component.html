@@ -5,8 +5,13 @@
   <div></div>
   <div>
     @if (authService.isAuthenticated()) {
-      <span class="me-3">{{authService.getUsername()}}</span>
-      <button (click)="logout()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded">Logout</button>
+      <span class="me-3">{{ authService.getUsername() }}</span>
+      <button
+        (click)="logout()"
+        class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded"
+      >
+        Logout
+      </button>
     }
   </div>
 </header>

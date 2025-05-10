@@ -1,5 +1,5 @@
-@if(control && control.invalid && (control.dirty || !control.untouched)) {
-  @if(control.hasError(error)) {
-    <div class="text-xs text-red-700">{{message}}</div>
+@if (control && control.invalid && (control.dirty || !control.untouched)) {
+  @if (control.hasError(error)) {
+    <div class="text-xs text-red-700">{{ message }}</div>
   }
 }
