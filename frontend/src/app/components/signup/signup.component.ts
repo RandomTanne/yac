@@ -25,9 +25,7 @@ import { FormErrorComponent } from '../../form-error/form-error.component';
   styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
-  constructor(
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   signupForm = new FormGroup({
     password: new FormControl<string>('', {
