@@ -1,8 +1,7 @@
 package ch.gibb.yac.config;
 
-import ch.gibb.yac.handlers.HelloWebSocketHandler;
+import ch.gibb.yac.handlers.ChatRequestWebSocketHandler;
 import ch.gibb.yac.repositories.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -12,16 +11,19 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
-    @Autowired
     PersonRepository personRepository;
 
+    public WebSocketConfig(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
+
     @Bean
-    public HelloWebSocketHandler helloWebSocketHandler() {
-        return new HelloWebSocketHandler(personRepository);
+    public ChatRequestWebSocketHandler chatRequestWebSocketHandler() {
+        return new ChatRequestWebSocketHandler(personRepository);
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(helloWebSocketHandler(), "/hello").setAllowedOrigins("*");
+        registry.addHandler(chatRequestWebSocketHandler(), "/sockets/chatrequests").setAllowedOrigins("*");
     }
 }
