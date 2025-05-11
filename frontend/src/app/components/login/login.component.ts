@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { NgClass } from '@angular/common';
-import { FormErrorComponent } from '../../form-error/form-error.component';
+import { FormErrorComponent } from '../form-error/form-error.component';
 
 @Component({
   selector: 'app-login',
