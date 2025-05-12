@@ -22,6 +22,10 @@ public class ChatController {
 
     @PostMapping("/request")
     public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody String targetUsername) {
+        if(targetUsername == null) {
+            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             handler.requestChat(user.getUsername(), targetUsername);
             return ResponseEntity.ok("You have successfully requested a chat with " + targetUsername);
@@ -36,6 +40,10 @@ public class ChatController {
 
     @PostMapping("/accept")
     public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody String targetUsername) {
+        if(targetUsername == null) {
+            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             handler.acceptChat(user.getUsername(), targetUsername);
             return ResponseEntity.ok("You have successfully accepted a chat with " + targetUsername);
@@ -52,6 +60,14 @@ public class ChatController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody ChatMessage message) {
+        if(message == null) {
+            return new ResponseEntity<>("Please provide a chat message", HttpStatus.BAD_REQUEST);
+        } else if(message.targetUsername() == null) {
+            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
+        } else if(message.message() == null) {
+            return new ResponseEntity<>("Please provide a message", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             handler.sendChat(user.getUsername(), message.targetUsername(), message.message());
             return ResponseEntity.ok("Message was sent successfully to the user " + message.targetUsername());
