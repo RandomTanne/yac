@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Bean
     public ChatRequestWebSocketHandler chatRequestWebSocketHandler() {
-        return new ChatRequestWebSocketHandler(personRepository);
+        return new ChatRequestWebSocketHandler();
     }
 
     @Override
