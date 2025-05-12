@@ -1,6 +1,6 @@
 package ch.gibb.yac.config;
 
-import ch.gibb.yac.handlers.ChatRequestWebSocketHandler;
+import ch.gibb.yac.handlers.ChatWebSocketHandler;
 import ch.gibb.yac.repositories.PersonRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +18,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     }
 
     @Bean
-    public ChatRequestWebSocketHandler chatRequestWebSocketHandler() {
-        return new ChatRequestWebSocketHandler();
+    public ChatWebSocketHandler chatRequestWebSocketHandler() {
+        return new ChatWebSocketHandler();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package ch.gibb.yac.controllers;
 
-import ch.gibb.yac.exceptions.ChatNotRequestedException;
-import ch.gibb.yac.exceptions.UserNotConnectedException;
-import ch.gibb.yac.handlers.ChatRequestWebSocketHandler;
+import ch.gibb.yac.exceptions.*;
+import ch.gibb.yac.handlers.ChatWebSocketHandler;
+import ch.gibb.yac.models.ChatMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,9 +14,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
-    private final ChatRequestWebSocketHandler handler;
+    private final ChatWebSocketHandler handler;
 
-    public ChatController(ChatRequestWebSocketHandler handler) {
+    public ChatController(ChatWebSocketHandler handler) {
         this.handler = handler;
     }
 
@@ -28,7 +28,9 @@ public class ChatController {
         } catch (IOException e) {
             return new ResponseEntity<>("Something went wrong while trying to request a chat with the user " + targetUsername, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UserNotConnectedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " is not connected!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsername + " is not connected", HttpStatus.NOT_FOUND);
+        } catch (AlreadyHasRequestedChatException e) {
+            return new ResponseEntity<>("You cannot request more than one chat at once", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -40,9 +42,25 @@ public class ChatController {
         } catch (IOException e) {
             return new ResponseEntity<>("Something went wrong while trying to accept a chat with the user " + targetUsername, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UserNotConnectedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " is not connected!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsername + " is not connected", HttpStatus.NOT_FOUND);
         } catch (ChatNotRequestedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " has not requested a chat with you!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsername + " has not requested a chat with you", HttpStatus.NOT_FOUND);
+        } catch (AlreadyHasOngoingChatException e) {
+            return new ResponseEntity<>("You cannot accept more than one chat at once", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/send")
+    public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody ChatMessage message) {
+        try {
+            handler.sendChat(user.getUsername(), message.targetUsername(), message.message());
+            return ResponseEntity.ok("Message was sent successfully to the user " + message.targetUsername());
+        } catch (IOException e) {
+            return new ResponseEntity<>("Something went wrong while trying to send a message to the user " + message.targetUsername(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (UserNotConnectedException e) {
+            return new ResponseEntity<>("The user " + message.targetUsername() + " is not connected", HttpStatus.NOT_FOUND);
+        } catch (NoOngoingChatException e) {
+            return new ResponseEntity<>("You don't have an ongoing chat with the user " + message.targetUsername(), HttpStatus.NOT_FOUND);
         }
     }
 }
