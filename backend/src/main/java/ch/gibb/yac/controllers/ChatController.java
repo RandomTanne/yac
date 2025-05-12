@@ -2,7 +2,9 @@ package ch.gibb.yac.controllers;
 
 import ch.gibb.yac.exceptions.*;
 import ch.gibb.yac.handlers.ChatWebSocketHandler;
-import ch.gibb.yac.models.ChatMessage;
+import ch.gibb.yac.dtos.ChatMessageDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,11 +23,7 @@ public class ChatController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody String targetUsername) {
-        if(targetUsername == null) {
-            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody @NotNull(message = "Target username must not be null") @Valid String targetUsername) {
         try {
             handler.requestChat(user.getUsername(), targetUsername);
             return ResponseEntity.ok("You have successfully requested a chat with " + targetUsername);
@@ -39,11 +37,7 @@ public class ChatController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody String targetUsername) {
-        if(targetUsername == null) {
-            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody @NotNull(message = "Target username must not be null") @Valid String targetUsername) {
         try {
             handler.acceptChat(user.getUsername(), targetUsername);
             return ResponseEntity.ok("You have successfully accepted a chat with " + targetUsername);
@@ -59,15 +53,7 @@ public class ChatController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody ChatMessage message) {
-        if(message == null) {
-            return new ResponseEntity<>("Please provide a chat message", HttpStatus.BAD_REQUEST);
-        } else if(message.targetUsername() == null) {
-            return new ResponseEntity<>("Please provide a target username", HttpStatus.BAD_REQUEST);
-        } else if(message.message() == null) {
-            return new ResponseEntity<>("Please provide a message", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody @Valid ChatMessageDTO message) {
         try {
             handler.sendChat(user.getUsername(), message.targetUsername(), message.message());
             return ResponseEntity.ok("Message was sent successfully to the user " + message.targetUsername());
