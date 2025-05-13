@@ -11,7 +11,7 @@ import {
   imports: [ReactiveFormsModule],
   templateUrl: './dashboard.component.html',
   standalone: true,
-  styleUrl: './dashboard.component.scss',
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent {
   requestChatForm = new FormGroup({
