@@ -33,13 +33,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        chatRequests.remove(session.getPrincipal().getName());
-
-        String ongoingChat = ongoingChats.get(session.getPrincipal().getName());
-        if(ongoingChat != null) {
-            ongoingChats.remove(session.getPrincipal().getName());
-            ongoingChats.remove(ongoingChat);
-        }
+        cancelAllChats(session.getPrincipal().getName());
         sessions.remove(session);
     }
 
@@ -115,5 +109,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         String sendChatMessage = objectMapper.writeValueAsString(new ChatMessageResponseDTO(message));
         sendToUser(targetUsername, sendChatMessage);
+    }
+
+    public void cancelAllChats(String requestUsername) {
+        chatRequests.remove(requestUsername);
+
+        String ongoingChat = ongoingChats.get(requestUsername);
+        if(ongoingChat != null) {
+            ongoingChats.remove(requestUsername);
+            ongoingChats.remove(ongoingChat);
+        }
     }
 }

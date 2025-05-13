@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.lang.annotation.Target;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -66,5 +67,11 @@ public class ChatController {
         } catch (NoOngoingChatException e) {
             return new ResponseEntity<>("You don't have an ongoing chat with the user " + message.targetUsername(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<String> cancelAllChats(@RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
+        handler.cancelAllChats(targetUsernameDTO.targetUsername());
+        return ResponseEntity.ok("Canceled all chats and chat requests");
     }
 }
