@@ -1,7 +1,7 @@
 package ch.gibb.yac.handlers;
 
 import ch.gibb.yac.dtos.chat.ChatAcceptDTO;
-import ch.gibb.yac.dtos.chat.ChatMessageSendDTO;
+import ch.gibb.yac.dtos.chat.ChatMessageResponseDTO;
 import ch.gibb.yac.dtos.chat.ChatRequestDTO;
 import ch.gibb.yac.exceptions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -113,7 +113,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new NoOngoingChatException("The user has no ongoing chat with you");
         }
 
-        String sendChatMessage = objectMapper.writeValueAsString(new ChatMessageSendDTO(message));
+        String sendChatMessage = objectMapper.writeValueAsString(new ChatMessageResponseDTO(message));
         sendToUser(targetUsername, sendChatMessage);
     }
 }

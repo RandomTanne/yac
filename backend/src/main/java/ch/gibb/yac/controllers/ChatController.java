@@ -1,12 +1,10 @@
 package ch.gibb.yac.controllers;
 
-import ch.gibb.yac.dtos.chat.ChatRequestDTO;
 import ch.gibb.yac.dtos.chat.TargetUsernameDTO;
 import ch.gibb.yac.exceptions.*;
 import ch.gibb.yac.handlers.ChatWebSocketHandler;
-import ch.gibb.yac.dtos.chat.ChatMessageDTO;
+import ch.gibb.yac.dtos.chat.ChatMessageRequestDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -57,7 +55,7 @@ public class ChatController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody @Valid ChatMessageDTO message) {
+    public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody @Valid ChatMessageRequestDTO message) {
         try {
             handler.sendChat(user.getUsername(), message.targetUsername(), message.message());
             return ResponseEntity.ok("Message was sent successfully to the user " + message.targetUsername());

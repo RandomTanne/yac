@@ -1,9 +1,9 @@
 package ch.gibb.yac.dtos.chat;
 
-public class ChatMessageSendDTO {
+public class ChatMessageResponseDTO {
     private final String message;
 
-    public ChatMessageSendDTO(String message) {
+    public ChatMessageResponseDTO(String message) {
         this.message = message;
     }
 
