@@ -1,8 +1,10 @@
 package ch.gibb.yac.controllers;
 
+import ch.gibb.yac.dtos.chat.ChatRequestDTO;
+import ch.gibb.yac.dtos.chat.TargetUsernameDTO;
 import ch.gibb.yac.exceptions.*;
 import ch.gibb.yac.handlers.ChatWebSocketHandler;
-import ch.gibb.yac.dtos.ChatMessageDTO;
+import ch.gibb.yac.dtos.chat.ChatMessageDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -23,30 +25,32 @@ public class ChatController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody @NotNull(message = "Target username must not be null") @Valid String targetUsername) {
+    public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
         try {
-            handler.requestChat(user.getUsername(), targetUsername);
-            return ResponseEntity.ok("You have successfully requested a chat with " + targetUsername);
+            handler.requestChat(user.getUsername(), targetUsernameDTO.targetUsername());
+            return ResponseEntity.ok("You have successfully requested a chat with " + targetUsernameDTO.targetUsername());
         } catch (IOException e) {
-            return new ResponseEntity<>("Something went wrong while trying to request a chat with the user " + targetUsername, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong while trying to request a chat with the user " + targetUsernameDTO.targetUsername(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UserNotConnectedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " is not connected", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsernameDTO.targetUsername() + " is not connected", HttpStatus.NOT_FOUND);
         } catch (AlreadyHasRequestedChatException e) {
             return new ResponseEntity<>("You cannot request more than one chat at once", HttpStatus.BAD_REQUEST);
+        } catch (CannotStartChatWithYourselfException e) {
+            return new ResponseEntity<>("You cannot start a chat with yourself", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody @NotNull(message = "Target username must not be null") @Valid String targetUsername) {
+    public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
         try {
-            handler.acceptChat(user.getUsername(), targetUsername);
-            return ResponseEntity.ok("You have successfully accepted a chat with " + targetUsername);
+            handler.acceptChat(user.getUsername(), targetUsernameDTO.targetUsername());
+            return ResponseEntity.ok("You have successfully accepted a chat with " + targetUsernameDTO.targetUsername());
         } catch (IOException e) {
-            return new ResponseEntity<>("Something went wrong while trying to accept a chat with the user " + targetUsername, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong while trying to accept a chat with the user " + targetUsernameDTO.targetUsername(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UserNotConnectedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " is not connected", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsernameDTO.targetUsername() + " is not connected", HttpStatus.NOT_FOUND);
         } catch (ChatNotRequestedException e) {
-            return new ResponseEntity<>("The user " + targetUsername + " has not requested a chat with you", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The user " + targetUsernameDTO.targetUsername() + " has not requested a chat with you", HttpStatus.NOT_FOUND);
         } catch (AlreadyHasOngoingChatException e) {
             return new ResponseEntity<>("You cannot accept more than one chat at once", HttpStatus.BAD_REQUEST);
         }

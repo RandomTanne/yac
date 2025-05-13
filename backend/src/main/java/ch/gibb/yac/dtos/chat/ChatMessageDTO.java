@@ -1,4 +1,4 @@
-package ch.gibb.yac.dtos;
+package ch.gibb.yac.dtos.chat;
 
 import jakarta.validation.constraints.NotNull;
 

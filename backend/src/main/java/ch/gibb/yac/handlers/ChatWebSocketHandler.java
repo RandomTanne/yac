@@ -1,6 +1,10 @@
 package ch.gibb.yac.handlers;
 
+import ch.gibb.yac.dtos.chat.ChatAcceptDTO;
+import ch.gibb.yac.dtos.chat.ChatMessageSendDTO;
+import ch.gibb.yac.dtos.chat.ChatRequestDTO;
 import ch.gibb.yac.exceptions.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -12,6 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
+    ObjectMapper objectMapper;
+
+    public ChatWebSocketHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final ConcurrentHashMap<String, String> chatRequests = new ConcurrentHashMap<>();
@@ -68,12 +77,16 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         return ongoingChats.containsKey(requestUsername);
     }
 
-    public void requestChat(String requestUsername, String targetUsername) throws UserNotConnectedException, IOException, AlreadyHasRequestedChatException {
+    public void requestChat(String requestUsername, String targetUsername) throws UserNotConnectedException, IOException, AlreadyHasRequestedChatException, CannotStartChatWithYourselfException {
+        if(requestUsername.equals(targetUsername)) {
+            throw new CannotStartChatWithYourselfException("The user cannot start a chat with himself");
+        }
         if(alreadyHasRequestedChat(requestUsername)) {
             throw new AlreadyHasRequestedChatException("The user already has requested a chat");
         }
 
-        sendToUser(targetUsername, "User " + requestUsername + " has requested a chat with you!");
+        String requestMessage = objectMapper.writeValueAsString(new ChatRequestDTO(requestUsername));
+        sendToUser(targetUsername, requestMessage);
         chatRequests.put(requestUsername, targetUsername);
     }
 
@@ -86,7 +99,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasOngoingChatException("The user already has an ongoing chat");
         }
 
-        sendToUser(targetUsername, "User " + requestUsername + " has accepted your chatrequest");
+        String acceptMessage = objectMapper.writeValueAsString(new ChatAcceptDTO());
+        sendToUser(targetUsername, acceptMessage);
 
         chatRequests.remove(requestUsername);
         chatRequests.remove(targetUsername);
@@ -99,6 +113,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new NoOngoingChatException("The user has no ongoing chat with you");
         }
 
-        sendToUser(targetUsername, message);
+        String sendChatMessage = objectMapper.writeValueAsString(new ChatMessageSendDTO(message));
+        sendToUser(targetUsername, sendChatMessage);
     }
 }
