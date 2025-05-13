@@ -22,7 +22,7 @@ import { FormErrorComponent } from '../form-error/form-error.component';
   ],
   templateUrl: './login.component.html',
   standalone: true,
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   constructor(

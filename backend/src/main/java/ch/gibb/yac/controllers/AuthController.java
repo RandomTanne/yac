@@ -54,8 +54,7 @@ public class AuthController {
         long jwtExpiration = new Date().getTime() + expiration;
 
         Cookie authCookie = new Cookie("JWT_Token", jwt);
-        authCookie.setMaxAge((int) jwtExpiration);
-        authCookie.setHttpOnly(true);
+        authCookie.setMaxAge(3600);
         response.addCookie(authCookie);
         return new ResponseEntity<>(new SignupDTO(jwt, jwtExpiration), HttpStatus.OK);
     }

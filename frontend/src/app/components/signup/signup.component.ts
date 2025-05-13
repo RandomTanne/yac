@@ -22,7 +22,7 @@ import { FormErrorComponent } from '../form-error/form-error.component';
   ],
   templateUrl: './signup.component.html',
   standalone: true,
-  styleUrl: './signup.component.css',
+  styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
   constructor(private authService: AuthService) {}
