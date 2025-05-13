@@ -4,6 +4,9 @@ import ch.gibb.yac.dtos.SignupDTO;
 import ch.gibb.yac.models.Person;
 import ch.gibb.yac.repositories.PersonRepository;
 import ch.gibb.yac.security.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,7 +42,7 @@ public class AuthController {
     private long expiration;
 
     @PostMapping("/signin")
-    public ResponseEntity<SignupDTO> authenticateUser(@RequestBody @Valid Person person) {
+    public ResponseEntity<SignupDTO> authenticateUser(@RequestBody @Valid Person person, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         person.getUsername(),
@@ -47,7 +50,14 @@ public class AuthController {
                 )
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return new ResponseEntity<>(new SignupDTO(jwtUtils.generateToken(userDetails.getUsername()), new Date().getTime() + expiration), HttpStatus.OK);
+        String jwt = jwtUtils.generateToken(userDetails.getUsername());
+        long jwtExpiration = new Date().getTime() + expiration;
+
+        Cookie authCookie = new Cookie("JWT_Token", jwt);
+        authCookie.setMaxAge((int) jwtExpiration);
+        authCookie.setHttpOnly(true);
+        response.addCookie(authCookie);
+        return new ResponseEntity<>(new SignupDTO(jwt, jwtExpiration), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
