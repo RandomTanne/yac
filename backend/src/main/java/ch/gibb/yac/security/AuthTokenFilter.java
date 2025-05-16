@@ -54,15 +54,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
         Cookie cookieAuth = WebUtils.getCookie(request, "JWT_Token");
 
-        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
-        }
-        if (cookieAuth != null) {
-            return cookieAuth.getValue();
-        }
-        return null;
+        return cookieAuth.getValue();
     }
 }

@@ -9,10 +9,7 @@ export class WebsocketsService {
   private socket$: WebSocketSubject<any>;
 
   constructor() {
-    this.socket$ = webSocket("ws://localhost:8080/sockets/chatrequest");
-    this.socket$.subscribe();
-    this.socket$.next({ message: 'some message' });
-    console.log(this.socket$.closed)
+    this.socket$ = webSocket("ws://localhost:8080/sockets/chatrequests");
   }
 
   sendMessage(message: any) {
