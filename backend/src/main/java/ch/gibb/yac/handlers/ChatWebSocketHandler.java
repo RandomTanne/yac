@@ -1,8 +1,6 @@
 package ch.gibb.yac.handlers;
 
-import ch.gibb.yac.dtos.chat.ChatAcceptDTO;
-import ch.gibb.yac.dtos.chat.ChatMessageResponseDTO;
-import ch.gibb.yac.dtos.chat.ChatRequestDTO;
+import ch.gibb.yac.dtos.chat.WebSocketResponseDTO;
 import ch.gibb.yac.exceptions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.CloseStatus;
@@ -79,7 +77,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasRequestedChatException("The user already has requested a chat");
         }
 
-        String requestMessage = objectMapper.writeValueAsString(new ChatRequestDTO(requestUsername));
+        String requestMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("request", null));
         sendToUser(targetUsername, requestMessage);
         chatRequests.put(requestUsername, targetUsername);
     }
@@ -93,7 +91,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasOngoingChatException("The user already has an ongoing chat");
         }
 
-        String acceptMessage = objectMapper.writeValueAsString(new ChatAcceptDTO());
+        String acceptMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("accept", null));
         sendToUser(targetUsername, acceptMessage);
 
         chatRequests.remove(requestUsername);
@@ -107,7 +105,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new NoOngoingChatException("The user has no ongoing chat with you");
         }
 
-        String sendChatMessage = objectMapper.writeValueAsString(new ChatMessageResponseDTO(message));
+        String sendChatMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("message", message));
         sendToUser(targetUsername, sendChatMessage);
     }
 

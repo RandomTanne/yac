@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.lang.annotation.Target;
 
 @RestController
 @RequestMapping("/api/chat")
