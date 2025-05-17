@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { WebsocketsService } from "../services/websockets.service";
+import { WebsocketsService } from "../../services/websockets.service";
 import { webSocket } from "rxjs/webSocket";
 
 @Component({
