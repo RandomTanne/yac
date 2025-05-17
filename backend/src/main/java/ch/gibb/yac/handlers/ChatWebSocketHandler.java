@@ -77,7 +77,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasRequestedChatException("The user already has requested a chat");
         }
 
-        String requestMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("request", null));
+        String requestMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("request", requestUsername));
         sendToUser(targetUsername, requestMessage);
         chatRequests.put(requestUsername, targetUsername);
     }
