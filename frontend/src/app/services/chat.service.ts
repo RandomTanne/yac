@@ -15,4 +15,11 @@ export class ChatService {
         withCredentials: true
       });
   }
+
+  getChatRequests(): Observable<string[]> {
+    return this.http
+      .get<string[]>('http://localhost:8080/api/chat/requested', {
+        withCredentials: true
+      });
+  }
 }

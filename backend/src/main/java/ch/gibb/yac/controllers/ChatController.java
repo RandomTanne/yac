@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -70,7 +71,15 @@ public class ChatController {
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelAllChats(@RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
-        handler.cancelAllChats(targetUsernameDTO.targetUsername());
+        try {
+            handler.cancelAllChats(targetUsernameDTO.targetUsername());
+        } catch (IOException | UserNotConnectedException ignored) {}
+
         return ResponseEntity.ok("Canceled all chats and chat requests");
+    }
+
+    @GetMapping("/requested")
+    public ResponseEntity<List<String>> getChatRequests(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(handler.getChatRequests(user.getUsername()));
     }
 }

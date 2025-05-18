@@ -9,9 +9,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     ObjectMapper objectMapper;
@@ -31,7 +34,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        cancelAllChats(session.getPrincipal().getName());
+        try {
+            cancelAllChats(session.getPrincipal().getName());
+        } catch (UserNotConnectedException | IOException ignored) {}
         sessions.remove(session);
     }
 
@@ -109,13 +114,21 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         sendToUser(targetUsername, sendChatMessage);
     }
 
-    public void cancelAllChats(String requestUsername) {
-        chatRequests.remove(requestUsername);
-
+    public void cancelAllChats(String requestUsername) throws IOException, UserNotConnectedException {
         String ongoingChat = ongoingChats.get(requestUsername);
         if(ongoingChat != null) {
             ongoingChats.remove(requestUsername);
             ongoingChats.remove(ongoingChat);
         }
+
+        String requestedUser = chatRequests.remove(requestUsername);
+        if(requestedUser != null) {
+            String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", requestUsername));
+            sendToUser(requestedUser, cancelMessage);
+        }
+    }
+
+    public List<String> getChatRequests(String requestUsername) {
+        return chatRequests.entrySet().stream().filter( e -> e.getValue().equals(requestUsername) ).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 }

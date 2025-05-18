@@ -9,13 +9,12 @@ import { WebsocketsService } from "../../services/websockets.service";
 import { Subscription } from 'rxjs';
 import { WebsocketMessage } from '../../../types';
 import { ChatService } from '../../services/chat.service';
-import { FormErrorComponent } from '../form-error/form-error.component';
 import { NgClass } from '@angular/common';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: "app-dashboard",
-  imports: [ReactiveFormsModule, FormErrorComponent, NgClass],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: "./dashboard.component.html",
   standalone: true,
   styleUrl: "./dashboard.component.scss",
@@ -39,6 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.handleWebsocketMessage(message);
       }
     );
+    this.updateChatRequests();
   }
 
   ngOnDestroy() {
@@ -49,13 +49,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
   handleWebsocketMessage(message: WebsocketMessage) {
     switch (message.type) {
       case "request": {
-        this.chatRequests.push(message.payload)
+        this.updateChatRequests();
+        break;
+      }
+      case "cancel": {
+        this.updateChatRequests();
         break;
       }
       case "accept": {
         break;
       }
     }
+  }
+
+  updateChatRequests() {
+    this.chatService.getChatRequests().subscribe( {
+      next: requests => {
+        this.chatRequests = requests;
+      },
+      error: () => {
+        this.toastrService.error("Something went wrong while fetching chats requested from you");
+      }
+    })
   }
 
   requestChat() {

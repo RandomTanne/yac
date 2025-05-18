@@ -56,6 +56,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private String parseJwt(HttpServletRequest request) {
         Cookie cookieAuth = WebUtils.getCookie(request, "JWT_Token");
 
+        if(cookieAuth == null) {
+            return null;
+        }
+
         return cookieAuth.getValue();
     }
 }

@@ -22,20 +22,19 @@
     />
     <button
       type="submit"
-      class="h-full sm:text-lg md:text-xl lg:text-2xl bg-indigo-300 rounded-lg p-1.5 md:p-2 lg:p-3"
+      class="h-full sm:text-lg md:text-xl lg:text-2xl bg-indigo-400 hover:bg-indigo-300 disabled:bg-indigo-100 rounded-lg p-1.5 md:p-2 lg:p-3"
+      [disabled]="requestChatForm.invalid"
     >
       Request chat
     </button>
   </form>
-  <app-form-error
-    [control]="requestChatForm.get('targetUsername')"
-    message="Username is required"
-    error="required"
-    class="text-xl"
-  ></app-form-error>
   <hr>
-  <h1 class="text-2xl">The following people have requested chats with you</h1>
+  @if (chatRequests.length > 0) {
+    <h1 class="text-2xl">The following people have requested chats with you</h1>
+  }
   @for (request of chatRequests; track request) {
     <h1>{{request}}</h1>
+  } @empty {
+    <h1 class="text-2xl">No one has requested a chat with you</h1>
   }
 </div>
