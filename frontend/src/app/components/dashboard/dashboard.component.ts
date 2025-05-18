@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }),
   });
 
+  requestedChat: string | null = null;
   chatRequests: string[] = [];
   private messageSubscription!: Subscription;
 
@@ -74,12 +75,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   requestChat() {
+    const requestedChat = this.requestChatForm.controls.targetUsername.getRawValue();
     this.chatService.requestChat(this.requestChatForm.getRawValue()).subscribe({
       next: response => {
         this.toastrService.success(response);
+        this.requestedChat = requestedChat;
       },
       error: err => {
         this.toastrService.error(err.error);
+      }
+    })
+  }
+
+  cancelChatRequests() {
+    this.chatService.cancelChatRequests().subscribe({
+      next: response => {
+        this.toastrService.success(response);
+        this.requestedChat = null;
+      },
+      error: () => {
+        this.toastrService.error("Something went wrong while canceling chat requests");
       }
     })
   }

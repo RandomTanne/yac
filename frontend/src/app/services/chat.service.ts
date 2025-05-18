@@ -22,4 +22,12 @@ export class ChatService {
         withCredentials: true
       });
   }
+
+  cancelChatRequests(): Observable<string> {
+    return this.http
+      .post('http://localhost:8080/api/chat/cancel', null, {
+        responseType: 'text',
+        withCredentials: true
+      });
+  }
 }

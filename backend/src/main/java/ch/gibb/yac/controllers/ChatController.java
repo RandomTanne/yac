@@ -70,9 +70,9 @@ public class ChatController {
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<String> cancelAllChats(@RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
+    public ResponseEntity<String> cancelAllChats(@AuthenticationPrincipal User user) {
         try {
-            handler.cancelAllChats(targetUsernameDTO.targetUsername());
+            handler.cancelAllChats(user.getUsername());
         } catch (IOException | UserNotConnectedException ignored) {}
 
         return ResponseEntity.ok("Canceled all chats and chat requests");
