@@ -11,6 +11,7 @@ import { WebsocketMessage } from '../../../types';
 import { ChatService } from '../../services/chat.service';
 import { NgClass } from '@angular/common';
 import {ToastrService} from 'ngx-toastr';
+import {Router} from '@angular/router';
 
 @Component({
   selector: "app-dashboard",
@@ -31,7 +32,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   chatRequests: string[] = [];
   private messageSubscription!: Subscription;
 
-  constructor(private websocketsService: WebsocketsService, private chatService: ChatService, private toastrService: ToastrService) {}
+  constructor(private websocketsService: WebsocketsService, private chatService: ChatService, private toastrService: ToastrService, private router: Router) {}
 
   ngOnInit() {
     this.messageSubscription = this.websocketsService.getMessages().subscribe(
@@ -58,6 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       }
       case "accept": {
+        this.acceptChatRequest(message.payload);
         break;
       }
     }
@@ -97,5 +99,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.toastrService.error("Something went wrong while canceling chat requests");
       }
     })
+  }
+
+  acceptChatRequest(username: string) {
+    this.router.navigate(['/chat', username]);
   }
 }

@@ -82,7 +82,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasRequestedChatException("The user already has requested a chat");
         }
 
-        String requestMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("request", requestUsername));
+        String requestMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("request", null));
         sendToUser(targetUsername, requestMessage);
         chatRequests.put(requestUsername, targetUsername);
     }
@@ -96,7 +96,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new AlreadyHasOngoingChatException("The user already has an ongoing chat");
         }
 
-        String acceptMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("accept", null));
+        String acceptMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("accept", requestUsername));
         sendToUser(targetUsername, acceptMessage);
 
         chatRequests.remove(requestUsername);
@@ -123,7 +123,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         String requestedUser = chatRequests.remove(requestUsername);
         if(requestedUser != null) {
-            String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", requestUsername));
+            String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", null));
             sendToUser(requestedUser, cancelMessage);
         }
     }

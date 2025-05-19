@@ -30,4 +30,12 @@ export class ChatService {
         withCredentials: true
       });
   }
+
+  sendMessage(message: { message: string }): Observable<string> {
+    return this.http
+      .post('http://localhost:8080/api/chat/send', message, {
+        responseType: 'text',
+        withCredentials: true
+      });
+  }
 }
