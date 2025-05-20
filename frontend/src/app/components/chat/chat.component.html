@@ -1,6 +1,8 @@
 <div class="grid grid-rows-[auto_1fr_min-content] h-full p-2">
   <h1>Chat</h1>
-  <div class="flex gap-2 overflow-auto flex flex-col min-h-0">
+  <div
+    class="flex gap-2 overflow-y-scroll max-h-[calc(100dvh-11.5rem)] flex flex-col flex-1"
+  >
     @for (msg of messages; track msg) {
       <div
         class="p-2 bg-slate-200 w-2/3"
