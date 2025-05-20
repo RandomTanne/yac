@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -107,13 +107,13 @@ export class DashboardComponent implements OnInit {
   }
 
   acceptChatRequest(username: string) {
-    this.chatService.acceptChat({targetUsername: username}).subscribe({
+    this.chatService.acceptChat({ targetUsername: username }).subscribe({
       next: () => {
-        this.startChat(username)
+        this.startChat(username);
       },
-      error: err => {
+      error: (err) => {
         this.toastrService.error(err.error);
-      }
+      },
     });
   }
 
