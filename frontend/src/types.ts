@@ -5,5 +5,5 @@ export interface WebsocketMessage {
 
 export interface ChatMessage {
   ownMessage: boolean;
-  message: string
+  message: string;
 }

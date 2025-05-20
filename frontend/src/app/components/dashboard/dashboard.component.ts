@@ -1,28 +1,28 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
-import { WebsocketsService } from "../../services/websockets.service";
+} from '@angular/forms';
+import { WebsocketsService } from '../../services/websockets.service';
 import { Subscription } from 'rxjs';
 import { WebsocketMessage } from '../../../types';
 import { ChatService } from '../../services/chat.service';
 import { NgClass } from '@angular/common';
-import {ToastrService} from 'ngx-toastr';
-import {Router} from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-dashboard",
+  selector: 'app-dashboard',
   imports: [ReactiveFormsModule, NgClass],
-  templateUrl: "./dashboard.component.html",
+  templateUrl: './dashboard.component.html',
   standalone: true,
-  styleUrl: "./dashboard.component.scss",
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   requestChatForm = new FormGroup({
-    targetUsername: new FormControl<string>("", {
+    targetUsername: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -32,14 +32,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   chatRequests: string[] = [];
   private messageSubscription!: Subscription;
 
-  constructor(private websocketsService: WebsocketsService, private chatService: ChatService, private toastrService: ToastrService, private router: Router) {}
+  constructor(
+    private websocketsService: WebsocketsService,
+    private chatService: ChatService,
+    private toastrService: ToastrService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
-    this.messageSubscription = this.websocketsService.getMessages().subscribe(
-      (message) => {
+    this.messageSubscription = this.websocketsService
+      .getMessages()
+      .subscribe((message) => {
         this.handleWebsocketMessage(message);
-      }
-    );
+      });
     this.updateChatRequests();
   }
 
@@ -50,15 +55,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   handleWebsocketMessage(message: WebsocketMessage) {
     switch (message.type) {
-      case "request": {
+      case 'request': {
         this.updateChatRequests();
         break;
       }
-      case "cancel": {
+      case 'cancel': {
         this.updateChatRequests();
         break;
       }
-      case "accept": {
+      case 'accept': {
         this.acceptChatRequest(message.payload);
         break;
       }
@@ -66,39 +71,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   updateChatRequests() {
-    this.chatService.getChatRequests().subscribe( {
-      next: requests => {
+    this.chatService.getChatRequests().subscribe({
+      next: (requests) => {
         this.chatRequests = requests;
       },
       error: () => {
-        this.toastrService.error("Something went wrong while fetching chats requested from you");
-      }
-    })
+        this.toastrService.error(
+          'Something went wrong while fetching chats requested from you',
+        );
+      },
+    });
   }
 
   requestChat() {
-    const requestedChat = this.requestChatForm.controls.targetUsername.getRawValue();
+    const requestedChat =
+      this.requestChatForm.controls.targetUsername.getRawValue();
     this.chatService.requestChat(this.requestChatForm.getRawValue()).subscribe({
-      next: response => {
+      next: (response) => {
         this.toastrService.success(response);
         this.requestedChat = requestedChat;
       },
-      error: err => {
+      error: (err) => {
         this.toastrService.error(err.error);
-      }
-    })
+      },
+    });
   }
 
   cancelChatRequests() {
     this.chatService.cancelChatRequests().subscribe({
-      next: response => {
+      next: (response) => {
         this.toastrService.success(response);
         this.requestedChat = null;
       },
       error: () => {
-        this.toastrService.error("Something went wrong while canceling chat requests");
-      }
-    })
+        this.toastrService.error(
+          'Something went wrong while canceling chat requests',
+        );
+      },
+    });
   }
 
   acceptChatRequest(username: string) {

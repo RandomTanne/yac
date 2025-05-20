@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
   constructor(private http: HttpClient) {}
 
-  requestChat( targetUsername: { targetUsername: string }): Observable<string> {
-    return this.http
-      .post('http://localhost:8080/api/chat/request', targetUsername, {
+  requestChat(targetUsername: { targetUsername: string }): Observable<string> {
+    return this.http.post(
+      'http://localhost:8080/api/chat/request',
+      targetUsername,
+      {
         responseType: 'text',
-        withCredentials: true
-      });
+        withCredentials: true,
+      },
+    );
   }
 
   getChatRequests(): Observable<string[]> {
-    return this.http
-      .get<string[]>('http://localhost:8080/api/chat/requested', {
-        withCredentials: true
-      });
+    return this.http.get<string[]>('http://localhost:8080/api/chat/requested', {
+      withCredentials: true,
+    });
   }
 
   cancelChatRequests(): Observable<string> {
-    return this.http
-      .post('http://localhost:8080/api/chat/cancel', null, {
-        responseType: 'text',
-        withCredentials: true
-      });
+    return this.http.post('http://localhost:8080/api/chat/cancel', null, {
+      responseType: 'text',
+      withCredentials: true,
+    });
   }
 
   sendMessage(message: { message: string }): Observable<string> {
-    return this.http
-      .post('http://localhost:8080/api/chat/send', message, {
-        responseType: 'text',
-        withCredentials: true
-      });
+    return this.http.post('http://localhost:8080/api/chat/send', message, {
+      responseType: 'text',
+      withCredentials: true,
+    });
   }
 }
