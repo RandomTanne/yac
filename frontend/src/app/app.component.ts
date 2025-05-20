@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
+import {WebsocketsService} from './services/websockets.service';
 
 @Component({
   selector: 'app-root',

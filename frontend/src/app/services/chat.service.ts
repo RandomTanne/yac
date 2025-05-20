@@ -32,10 +32,21 @@ export class ChatService {
     });
   }
 
-  sendMessage(message: { message: string }): Observable<string> {
-    return this.http.post('http://localhost:8080/api/chat/send', message, {
+  sendMessage(messageDTO: { targetUsername: string, message: string }): Observable<string> {
+    return this.http.post('http://localhost:8080/api/chat/send', messageDTO, {
       responseType: 'text',
       withCredentials: true,
     });
+  }
+
+  acceptChat(targetUsername: { targetUsername: string }): Observable<string> {
+    return this.http.post(
+      'http://localhost:8080/api/chat/accept',
+      targetUsername,
+      {
+        responseType: 'text',
+        withCredentials: true,
+      },
+    );
   }
 }

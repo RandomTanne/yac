@@ -115,15 +115,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void cancelAllChats(String requestUsername) throws IOException, UserNotConnectedException {
+        String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", null));
+
         String ongoingChat = ongoingChats.get(requestUsername);
         if(ongoingChat != null) {
             ongoingChats.remove(requestUsername);
             ongoingChats.remove(ongoingChat);
+            sendToUser(ongoingChat, cancelMessage);
         }
 
         String requestedUser = chatRequests.remove(requestUsername);
         if(requestedUser != null) {
-            String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", null));
             sendToUser(requestedUser, cancelMessage);
         }
     }

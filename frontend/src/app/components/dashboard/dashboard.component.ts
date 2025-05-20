@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
   standalone: true,
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit {
   requestChatForm = new FormGroup({
     targetUsername: new FormControl<string>('', {
       nonNullable: true,
@@ -48,11 +48,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.updateChatRequests();
   }
 
-  ngOnDestroy() {
-    this.websocketsService.closeConnection();
-    this.messageSubscription.unsubscribe();
-  }
-
   handleWebsocketMessage(message: WebsocketMessage) {
     switch (message.type) {
       case 'request': {
@@ -64,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       }
       case 'accept': {
-        this.acceptChatRequest(message.payload);
+        this.startChat(message.payload);
         break;
       }
     }
@@ -112,6 +107,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   acceptChatRequest(username: string) {
+    this.chatService.acceptChat({targetUsername: username}).subscribe({
+      next: () => {
+        this.startChat(username)
+      },
+      error: err => {
+        this.toastrService.error(err.error);
+      }
+    });
+  }
+
+  startChat(username: string) {
     this.router.navigate(['/chat', username]);
   }
 }
