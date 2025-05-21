@@ -1,0 +1,59 @@
+<div class="text-center mt-3 sm:mt-4 md:mt-4.5 lg:mt-5 w-full grid gap-2">
+  <h1 class="text-5xl md:text-6xl lg:text-7xl">Welcome to YAC</h1>
+  <p class="md:text-lg lg:text-xl">
+    Start a new private Chat by entering someones username
+  </p>
+  <form
+    class="p-2 sm:p-4 md:p-8 grid-cols-1 items-center gap-3 w-full grid md:grid-cols-[1fr_auto]"
+    [formGroup]="requestChatForm"
+    (submit)="requestChat()"
+  >
+    <input
+      class="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 rounded-lg h-full sm:text-lg md:text-xl lg:text-2xl p-1.5 md:p-2 lg:p-3 placeholder:text-gray-500"
+      formControlName="targetUsername"
+      type="text"
+      placeholder="Enter username here"
+      [ngClass]="{
+        'focus:ring-red-700 focus:border-red-700':
+          requestChatForm.controls.targetUsername.invalid &&
+          (requestChatForm.controls.targetUsername.dirty ||
+            !requestChatForm.controls.targetUsername.untouched),
+      }"
+    />
+    <button
+      type="submit"
+      class="h-full sm:text-lg md:text-xl lg:text-2xl bg-indigo-400 hover:bg-indigo-300 disabled:bg-indigo-100 rounded-lg p-1.5 md:p-2 lg:p-3"
+      [disabled]="requestChatForm.invalid"
+    >
+      Request chat
+    </button>
+  </form>
+  @if (requestedChat) {
+    <div class="flex items-center">
+      <h1 class="mx-3">You have requested a chat with {{ requestedChat }}</h1>
+      <button
+        (click)="cancelChatRequests()"
+        class="bg-transparent hover:bg-indigo-400 text-indigo-700 font-semibold hover:text-white py-1 px-2 border border-indigo-500 hover:border-transparent rounded"
+      >
+        Cancel
+      </button>
+    </div>
+  }
+  <hr />
+  @if (chatRequests.length > 0) {
+    <h1 class="text-2xl">The following people have requested chats with you</h1>
+  }
+  @for (request of chatRequests; track request) {
+    <div class="flex justify-center items-center">
+      <h1 class="mx-3">{{ request }}</h1>
+      <button
+        (click)="acceptChatRequest(request)"
+        class="bg-transparent hover:bg-indigo-400 text-indigo-700 font-semibold hover:text-white py-1 px-2 border border-indigo-500 hover:border-transparent rounded"
+      >
+        Accept
+      </button>
+    </div>
+  } @empty {
+    <h1 class="text-2xl">No one has requested a chat with you</h1>
+  }
+</div>

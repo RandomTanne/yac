@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideToastr } from 'ngx-toastr';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -9,6 +11,7 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
+      providers: [provideHttpClient(), provideToastr()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
