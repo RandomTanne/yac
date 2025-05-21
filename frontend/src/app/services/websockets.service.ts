@@ -16,8 +16,4 @@ export class WebsocketsService {
   getMessages(): Observable<WebsocketMessage> {
     return this.socket$.asObservable();
   }
-
-  closeConnection() {
-    this.socket$.complete();
-  }
 }
