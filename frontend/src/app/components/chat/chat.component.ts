@@ -85,10 +85,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         targetUsername: this.targetUsername!,
       })
       .subscribe({
-        next: () =>
-          plaintext
-            ? this.messages.push({ ownMessage: true, message: plaintext })
-            : null,
+        next: () => {
+          if (plaintext) {
+            this.messages.push({ ownMessage: true, message: plaintext });
+          }
+          this.chatForm.controls.message.reset();
+        },
         error: (err) => {
           this.toastrService.error(err.error);
         },
