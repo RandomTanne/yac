@@ -147,4 +147,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.sendRawMessage(payload, plaintext);
   }
+
+  leaveChat() {
+    this.router.navigate(['/']);
+  }
 }
