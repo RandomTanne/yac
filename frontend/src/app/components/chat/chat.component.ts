@@ -75,7 +75,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();
-    this.chatService.cancelChatRequests().subscribe();
+    this.chatService.cancelChatRequests().subscribe({
+      error: () => { return; }
+    });
   }
 
   private sendRawMessage(payload: string, plaintext: string | null = null) {
