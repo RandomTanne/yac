@@ -18,6 +18,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * The security config with the cors config and the security filter chain
+ * @author Jannik Pulfer
+ * @version 2.0
+ * @since 2025-04-29
+ */
 @Configuration
 public class WebSecurityConfig {
 
@@ -50,6 +56,9 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * The CORS configuration of the application.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -64,6 +73,9 @@ public class WebSecurityConfig {
     }
 
 
+    /**
+     * The security filter chain of the application, used to secure the endpoints.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

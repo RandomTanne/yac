@@ -14,6 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * The central controller for handling chats, requests and sending messages.
+ * @author Jannik Pulfer
+ * @version 1.0
+ * @since 2025-05-07
+ */
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
@@ -23,6 +29,9 @@ public class ChatController {
         this.handler = handler;
     }
 
+    /**
+     * Used to request a chat from the person with the username targetUsername.
+     */
     @PostMapping("/request")
     public ResponseEntity<String> requestChat(@AuthenticationPrincipal User user, @RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
         try {
@@ -39,6 +48,9 @@ public class ChatController {
         }
     }
 
+    /**
+     * Used to accept a chat from the person with the username targetUsername.
+     */
     @PostMapping("/accept")
     public ResponseEntity<String> acceptChat(@AuthenticationPrincipal User user, @RequestBody @Valid TargetUsernameDTO targetUsernameDTO) {
         try {
@@ -55,6 +67,9 @@ public class ChatController {
         }
     }
 
+    /**
+     * Used to send a chat to the person with the username targetUsername.
+     */
     @PostMapping("/send")
     public ResponseEntity<String> sendChat(@AuthenticationPrincipal User user, @RequestBody @Valid ChatMessageRequestDTO message) {
         try {
@@ -69,6 +84,9 @@ public class ChatController {
         }
     }
 
+    /**
+     * Used to cancel all chat requests and ongoing chats.
+     */
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelAllChats(@AuthenticationPrincipal User user) {
         try {
@@ -78,6 +96,9 @@ public class ChatController {
         return ResponseEntity.ok("Canceled all chats and chat requests");
     }
 
+    /**
+     * Used to get the usernames of all people that requested a chat from you.
+     */
     @GetMapping("/requested")
     public ResponseEntity<List<String>> getChatRequests(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(handler.getChatRequests(user.getUsername()));

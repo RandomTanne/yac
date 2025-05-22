@@ -5,7 +5,6 @@ import ch.gibb.yac.models.Person;
 import ch.gibb.yac.repositories.PersonRepository;
 import ch.gibb.yac.security.JwtUtil;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * The controller where logging in and signing up are handled.
+ * @author Jannik Pulfer
+ * @version 2.0
+ * @since 2025-04-29
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -41,6 +46,9 @@ public class AuthController {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    /**
+     * Creates a user session by providing a jwt.
+     */
     @PostMapping("/signin")
     public ResponseEntity<SignupDTO> authenticateUser(@RequestBody @Valid Person person, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
@@ -61,6 +69,9 @@ public class AuthController {
         return new ResponseEntity<>(new SignupDTO(jwt, jwtExpiration), HttpStatus.OK);
     }
 
+    /**
+     * Registers a new user in the application with a generated UUID as username.
+     */
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody @Valid Person person) {
         Person newUser = new Person(

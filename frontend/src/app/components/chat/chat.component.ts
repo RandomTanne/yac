@@ -23,6 +23,10 @@ import {
   u8atoa,
 } from '../../../crypto';
 
+//  The chat component which is used to send chats
+//  Author: Jannik Pulfer
+//  Version: 1.0
+//  Since: 2025-05-13
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -31,13 +35,19 @@ import {
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  // The username of the person the user is chatting with.
   targetUsername: string | null = null;
+  // An array with the sent and received chat messages.
   messages: ChatMessage[] = [];
 
+  // The private and public key pair generated for this chat.
   ecKeyPair: CryptoKeyPair | null = null;
+  // The AES key generated for this chat.
   aesKey: CryptoKey | null = null;
+  // The public key of the person the user is chatting with.
   peerPublicKey: CryptoKey | null = null;
 
+  // The message subscription for receiving messages from the websocket.
   private messageSubscription!: Subscription;
 
   chatForm = new FormGroup({
@@ -82,6 +92,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Send a message
   private sendRawMessage(payload: string, plaintext: string | null = null) {
     this.chatService
       .sendMessage({
@@ -101,6 +112,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Handle event messages coming through the websocket channel
   async handleWebsocketMessage(message: WebsocketMessage) {
     if (message.type === 'cancel') {
       this.toastrService.info('The other user has left the chat');
@@ -129,12 +141,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         return;
       }
     } catch (e) {
-      // TODO: sth better
       this.toastrService.error(String(e));
       this.messages.push({ ownMessage: false, message: message.payload });
     }
   }
 
+  // Encrypt and send a message
   async sendMessage() {
     const plaintext = this.chatForm.controls.message.value;
     if (!this.aesKey) {

@@ -16,6 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * The central websocket handler for informing the clients about chat events.
+ * @author Jannik Pulfer
+ * @version 1.0
+ * @since 2025-05-06
+ */
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     ObjectMapper objectMapper;
 
@@ -27,11 +33,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentHashMap<String, String> chatRequests = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> ongoingChats = new ConcurrentHashMap<>();
 
+    /**
+     * Saves all newly created sessions for further access.
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
     }
 
+    /**
+     * Cancels all active chats and removes the session when it is closed.
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         try {
@@ -40,6 +52,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         sessions.remove(session);
     }
 
+    /**
+     * Tries to send a message to the session with the targetUsername.
+     */
     private void sendToUser(String targetUsername, String message) throws UserNotConnectedException, IOException {
         Optional<WebSocketSession> targetSession = sessions.stream()
                 .filter(session ->
@@ -57,23 +72,38 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * Checks if the person with the username requestUsername has requested a chat from the person with the username targetUsername.
+     */
     private boolean chatWasRequested(String requestUsername, String targetUsername) {
         return chatRequests.containsKey(requestUsername) && chatRequests.get(requestUsername).equals(targetUsername);
     }
 
+    /**
+     * Checks if the person with the username requestUsername has an ongoing chat with the person with the username targetUsername.
+     */
     private boolean chatIsOngoing(String requestUsername, String targetUsername) {
         return (ongoingChats.containsKey(requestUsername) && ongoingChats.get(requestUsername).equals(targetUsername)) ||
                 (ongoingChats.containsKey(targetUsername) && ongoingChats.get(targetUsername).equals(requestUsername));
     }
 
+    /**
+     * Checks if the person with the username requestUsername already has requested a chat from someone.
+     */
     private boolean alreadyHasRequestedChat(String requestUsername) {
         return chatRequests.containsKey(requestUsername);
     }
 
+    /**
+     * Checks if the person with the username requestUsername already has an ongoing chat with someone.
+     */
     private boolean alreadyHasOngoingChat(String requestUsername) {
         return ongoingChats.containsKey(requestUsername);
     }
 
+    /**
+     * Tries to request a chat from the person with the username requestUsername.
+     */
     public void requestChat(String requestUsername, String targetUsername) throws UserNotConnectedException, IOException, AlreadyHasRequestedChatException, CannotStartChatWithYourselfException {
         if(requestUsername.equals(targetUsername)) {
             throw new CannotStartChatWithYourselfException("The user cannot start a chat with himself");
@@ -87,6 +117,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         chatRequests.put(requestUsername, targetUsername);
     }
 
+    /**
+     * Tries to accept a chat request from the person with the username targetUsername.
+     */
     public void acceptChat(String requestUsername, String targetUsername) throws ChatNotRequestedException, UserNotConnectedException, IOException, AlreadyHasOngoingChatException {
         if(!chatWasRequested(targetUsername, requestUsername)) {
             throw new ChatNotRequestedException("The user has not requested a chat with you");
@@ -105,6 +138,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ongoingChats.put(targetUsername, requestUsername);
     }
 
+    /**
+     * Tries to send a chat to the person with the username targetUsername.
+     */
     public void sendChat(String requestUsername, String targetUsername, String message) throws NoOngoingChatException, UserNotConnectedException, IOException {
         if(!chatIsOngoing(requestUsername, targetUsername)) {
             throw new NoOngoingChatException("The user has no ongoing chat with you");
@@ -114,6 +150,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         sendToUser(targetUsername, sendChatMessage);
     }
 
+    /**
+     * Cancels all chat requests and ongoing chats and also informs the clients about this.
+     */
     public void cancelAllChats(String requestUsername) throws IOException, UserNotConnectedException {
         String cancelMessage = objectMapper.writeValueAsString(new WebSocketResponseDTO("cancel", null));
 
@@ -130,6 +169,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * Returns the usernames of all people that requested a chat from you.
+     */
     public List<String> getChatRequests(String requestUsername) {
         return chatRequests.entrySet().stream().filter( e -> e.getValue().equals(requestUsername) ).map(Map.Entry::getKey).collect(Collectors.toList());
     }
