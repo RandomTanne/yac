@@ -15,6 +15,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 import java.io.IOException;
 
+/**
+ * The AuthTokenFilter where the JWT from requests is parsed and validated.
+ * @author Jannik Pulfer
+ * @version 1.0
+ * @since 2025-04-29
+ */
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtils;
