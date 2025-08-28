@@ -109,11 +109,13 @@ jobs:
           labels: |
             ${{ steps.meta.outputs.labels }}
 
+      - name: Extract image ref
+        run: echo "IMAGE_REF=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)" >> $GITHUB_ENV
+
       - name: Sign ${{ matrix.config.name }} image and attach SBOM attestation
         uses: adfinis/container-scanning-action@v0.3.0
         with:
-          image-ref: ghcr.io/${{ steps.meta.outputs.tags[0] }}
+          image-ref: ghcr.io/${{ env.IMAGE_REF }}
           token: ${{ secrets.GITHUB_TOKEN }}
           digest: ${{ steps.docker.outputs.digest }}
           attest: true
-
