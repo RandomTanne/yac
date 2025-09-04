@@ -12,19 +12,21 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
-    PersonRepository personRepository;
+  PersonRepository personRepository;
 
-    public WebSocketConfig(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
+  public WebSocketConfig(PersonRepository personRepository) {
+    this.personRepository = personRepository;
+  }
 
-    @Bean
-    public ChatWebSocketHandler chatRequestWebSocketHandler() {
-        return new ChatWebSocketHandler(new ObjectMapper());
-    }
+  @Bean
+  public ChatWebSocketHandler chatRequestWebSocketHandler() {
+    return new ChatWebSocketHandler(new ObjectMapper());
+  }
 
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(chatRequestWebSocketHandler(), "/sockets/chatrequests").setAllowedOrigins("*");
-    }
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    registry
+        .addHandler(chatRequestWebSocketHandler(), "/sockets/chatrequests")
+        .setAllowedOrigins("*");
+  }
 }

@@ -1,4 +1,3 @@
 package ch.gibb.yac.dtos;
 
-public record SignupDTO(String jwt, long expiration) {
-}
+public record SignupDTO(String jwt, long expiration) {}
