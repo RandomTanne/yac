@@ -10,7 +10,8 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: gradle:jdk21-alpine
+    runs-on: ubuntu-latest
+    container: gradle:jdk21-alpine
 
     steps:
       - uses: actions/checkout@v5
