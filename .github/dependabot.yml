@@ -1,0 +1,23 @@
+---
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+      timezone: "Europe/Zurich"
+
+  - package-ecosystem: "gradle"
+    directory: "/backend"
+    schedule:
+      interval: daily
+      time: "04:00"
+      timezone: "Europe/Zurich"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: daily
+      time: "04:00"
+      timezone: "Europe/Zurich"
