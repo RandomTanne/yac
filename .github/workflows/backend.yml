@@ -1,0 +1,26 @@
+---
+name: Backend
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+defaults:
+  run:
+    working-directory: ./backend
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    container: gradle:jdk21-alpine
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Test
+        run: gradle test
