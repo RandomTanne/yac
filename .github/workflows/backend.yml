@@ -22,7 +22,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Test
+      - name: Check formatting
         run: gradle spotlessCheck
 
   test:
