@@ -48,9 +48,8 @@ spotless {
 	java {
 		importOrder()
 		removeUnusedImports()
-		removeWildcardImports()
 		cleanthat()
-		googleJavaFormat().reflowLongStrings().skipJavadocFormatting()
+		googleJavaFormat().aosp().reflowLongStrings().skipJavadocFormatting()
 		formatAnnotations()
 	}
 }

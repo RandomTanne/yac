@@ -26,75 +26,77 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class WebSecurityConfig {
 
-  CustomUserDetailsService userDetailsService;
+    CustomUserDetailsService userDetailsService;
 
-  private final AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
-  private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-  public WebSecurityConfig(
-      CustomUserDetailsService userDetailsService,
-      AuthEntryPointJwt unauthorizedHandler,
-      JwtUtil jwtUtil) {
-    this.userDetailsService = userDetailsService;
-    this.unauthorizedHandler = unauthorizedHandler;
-    this.jwtUtil = jwtUtil;
-  }
+    public WebSecurityConfig(
+            CustomUserDetailsService userDetailsService,
+            AuthEntryPointJwt unauthorizedHandler,
+            JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.jwtUtil = jwtUtil;
+    }
 
-  @Bean
-  public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter(jwtUtil, userDetailsService);
-  }
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter(jwtUtil, userDetailsService);
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(
-      AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    return authenticationConfiguration.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  /**
-   * The CORS configuration of the application.
-   */
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost"));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowCredentials(true);
+    /**
+     * The CORS configuration of the application.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return source;
-  }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
-  /**
-   * The security filter chain of the application, used to secure the endpoints.
-   */
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .exceptionHandling(
-            exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/api/auth/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated());
+    /**
+     * The security filter chain of the application, used to secure the endpoints.
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .exceptionHandling(
+                        exceptionHandling ->
+                                exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(
+                        sessionManagement ->
+                                sessionManagement.sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        authorizeRequests ->
+                                authorizeRequests
+                                        .requestMatchers("/api/auth/**")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated());
 
-    http.addFilterBefore(
-        authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-  }
+        http.addFilterBefore(
+                authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 }

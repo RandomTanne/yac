@@ -1,5 +1,6 @@
 package ch.gibb.yac.security;
 
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -10,47 +11,52 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-  @Value("${jwt.secret}")
-  private String jwtSecret;
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-  @Value("${jwt.expiration}")
-  private int jwtExpirationMs;
+    @Value("${jwt.expiration}")
+    private int jwtExpirationMs;
 
-  private SecretKey key;
+    private SecretKey key;
 
-  @PostConstruct
-  public void init() {
-    this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-  }
-
-  public String generateToken(String username) {
-    return Jwts.builder()
-        .subject(username)
-        .issuedAt(new Date())
-        .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
-        .signWith(key, Jwts.SIG.HS256)
-        .compact();
-  }
-
-  public String getUsernameFromToken(String token) {
-    return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
-  }
-
-  public boolean validateJwtToken(String token) {
-    try {
-      Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-      return true;
-    } catch (SecurityException e) {
-      System.out.println("Invalid JWT signature: " + e.getMessage());
-    } catch (MalformedJwtException e) {
-      System.out.println("Invalid JWT token: " + e.getMessage());
-    } catch (ExpiredJwtException e) {
-      System.out.println("JWT token is expired: " + e.getMessage());
-    } catch (UnsupportedJwtException e) {
-      System.out.println("JWT token is unsupported: " + e.getMessage());
-    } catch (IllegalArgumentException e) {
-      System.out.println("JWT claims string is empty: " + e.getMessage());
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
-    return false;
-  }
+
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key, Jwts.SIG.HS256)
+                .compact();
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+
+    public boolean validateJwtToken(String token) {
+        try {
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            return true;
+        } catch (SecurityException e) {
+            System.out.println("Invalid JWT signature: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.out.println("Invalid JWT token: " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            System.out.println("JWT token is expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.out.println("JWT token is unsupported: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claims string is empty: " + e.getMessage());
+        }
+        return false;
+    }
 }
