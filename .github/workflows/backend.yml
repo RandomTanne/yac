@@ -12,6 +12,19 @@ defaults:
     working-directory: ./backend
 
 jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    container: gradle:jdk21-alpine
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Check formatting
+        run: gradle spotlessCheck
+
   test:
     name: Test
     runs-on: ubuntu-latest

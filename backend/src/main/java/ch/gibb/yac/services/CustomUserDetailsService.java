@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService  implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final PersonRepository personRepository;
 
@@ -21,9 +21,6 @@ public class CustomUserDetailsService  implements UserDetailsService {
             throw new UsernameNotFoundException("User Not Found with username: " + username);
         }
         return new org.springframework.security.core.userdetails.User(
-                person.getUsername(),
-                person.getPassword(),
-                person.getAuthorities()
-        );
+                person.getUsername(), person.getPassword(), person.getAuthorities());
     }
 }

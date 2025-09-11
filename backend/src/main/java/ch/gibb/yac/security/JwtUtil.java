@@ -3,18 +3,20 @@ package ch.gibb.yac.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
+
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
+
     private SecretKey key;
 
     @PostConstruct
@@ -33,7 +35,8 @@ public class JwtUtil {
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
-                .verifyWith(key).build()
+                .verifyWith(key)
+                .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
