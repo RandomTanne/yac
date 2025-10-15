@@ -21,7 +21,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache-dependency-path: frontend/package-lock.json
           cache: npm
@@ -45,7 +45,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache-dependency-path: frontend/package-lock.json
           cache: npm
