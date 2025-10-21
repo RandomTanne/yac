@@ -29,7 +29,7 @@
     "ngx-toastr": "^19.0.0",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
-    "tailwindcss": "^4.1.13",
+    "tailwindcss": "^4.1.15",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
