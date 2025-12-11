@@ -21,7 +21,7 @@ import {
   generateECDHKeyPair,
   importPublicKey,
   u8atoa,
-} from '../../../crypto';
+} from '../../../lib/crypto';
 
 //  The chat component which is used to send chats
 //  Author: Jannik Pulfer
