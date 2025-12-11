@@ -10,7 +10,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC79rfpLdP4oP+Ib2vgr0JR+YcOxxM3iXf2nXC9X6YaDayT8pvNHyu/Gkvi6B5SbkvxiL2hE2UOg7qRmzeHjoRZdKxd03PTQ9yk7b795bgs2P5omz16FXf6nrS+tFk9WtbX3xX361MAnAb1xo8aAWBfSG4fCnrFHLF7aqLx183yBtZfkFUwDbDa/tTmO99RgS+SnY0KQMl3iQwK0jkczYCFZKpBQRZsDJljhPKJIB4ZH+c6ZuckSqrYlXiMKQK/4rLAEasVmxGoIVvw7hsvg9DyyYKqg+FxQmWmKtuiFqXdqx07ufOGbj1Nd42ZhTKcYr9/2ad0ylETC6VU8B2HNoiNkeeiRE7fm1hd6dWCU0MyVb12gcGd7fbbF5x4gAYbfPKOvdZadH/OLQoSmvwlsew7TF3K86LG/LkAzGrjsGovHeBoqXr6YmA1kQmcURMFhEcclb3Bw11IzCJmmEqUB7eVKVaZVT1m3qUCH1zC/5JkCz43g726QPYNd4lhGH8k0HIuGRvZ2yyE5/Wgn7+aXDQ735CEt1OQjkO6OoP4R8idxk+8gERUHa+QVHpRSuSzNr5hgzADq7c8MEV8HWWh1xK7mtvibXeE70YHwk8WsXxnokkLQ07MtyivAKwiUMfMUwCO3P4S2ZLJsVqnq0yQ0d2lpTJSHAaCzNJwsd6xYhaHuw== jpu140816@stud.gibb.ch
+      - <YOUR_PUBLIC_KEY>
 
 packages:
   - fail2bin
