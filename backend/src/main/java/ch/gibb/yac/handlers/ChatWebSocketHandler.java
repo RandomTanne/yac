@@ -25,7 +25,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     ObjectMapper objectMapper;
 
     public ChatWebSocketHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+        this.objectMapper = objectMapper.copy();
     }
 
     private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
@@ -45,11 +45,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        try {
-            cancelAllChats(session.getPrincipal().getName());
-        } catch (UserNotConnectedException | IOException ignored) {
+        var principal = session.getPrincipal();
+        if (principal == null) {
+            sessions.remove(session);
+            return;
         }
-        sessions.remove(session);
+
+        String username = principal.getName();
+        try {
+            cancelAllChats(username);
+        } catch (UserNotConnectedException | IOException e) {
+            System.err.println("Ignoring exception when closing WebSocket: " + e.getMessage());
+        } finally {
+            sessions.remove(session);
+        }
     }
 
     /**
@@ -61,7 +70,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 sessions.stream()
                         .filter(
                                 session -> {
-                                    if (!session.isOpen()) return false;
+                                    if (!session.isOpen()) {
+                                        return false;
+                                    }
                                     return targetUsername.equals(session.getPrincipal().getName());
                                 })
                         .findFirst();
@@ -74,7 +85,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     * Checks if the person with the username requestUsername has requested a chat from the person with the username targetUsername.
+     * Checks if the person with the username requestUsername has requested a chat from the person with the username
+     * targetUsername.
      */
     private boolean chatWasRequested(String requestUsername, String targetUsername) {
         return chatRequests.containsKey(requestUsername)
@@ -82,7 +94,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     * Checks if the person with the username requestUsername has an ongoing chat with the person with the username targetUsername.
+     * Checks if the person with the username requestUsername has an ongoing chat with the person with the username
+     * targetUsername.
      */
     private boolean chatIsOngoing(String requestUsername, String targetUsername) {
         return (ongoingChats.containsKey(requestUsername)

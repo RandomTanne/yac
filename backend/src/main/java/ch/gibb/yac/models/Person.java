@@ -2,6 +2,7 @@ package ch.gibb.yac.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import org.hibernate.validator.constraints.Length;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Entity
 public class Person implements UserDetails {
+    @Serial private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
