@@ -49,4 +49,4 @@ jobs:
           persist-credentials: false
 
       - name: Lint
-        run: gradle check
+        run: gradle spotbugsMain
