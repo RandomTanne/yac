@@ -1,0 +1,13 @@
+services:
+  backend:
+    env_file: .prod-env
+    image: ghcr.io/randomtanne/yac/backend:${BACKEND_TAG:?error}
+    restart: always
+
+  frontend:
+    env_file: .prod-env
+    image: ghcr.io/randomtanne/yac/frontend:${FRONTEND_TAG:?error}
+    restart: always
+
+  postgres:
+    env_file: .prod-env
