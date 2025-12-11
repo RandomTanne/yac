@@ -3,10 +3,42 @@ plugins {
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.diffplug.spotless' version '7.2.1'
+    id "checkstyle"
+    id "pmd"
+    id "com.github.spotbugs" version "6.0.22"
 }
 
 group = 'ch.gibb'
 version = '0.0.0'
+
+checkstyle {
+    toolVersion = "10.17.0"
+    configFile = rootProject.file("checkstyle.xml")
+}
+
+spotbugs {
+    ignoreFailures = false
+}
+
+
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+    }
+}
+
+pmd {
+    toolVersion = "7.6.0"
+    consoleOutput = true
+    ignoreFailures = false
+}
+
+tasks.named("check") {
+    dependsOn("spotbugsMain", "spotbugsTest")
+    dependsOn("checkstyleMain", "checkstyleTest", "pmdMain", "pmdTest")
+}
 
 java {
 	toolchain {

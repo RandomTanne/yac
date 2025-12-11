@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/chat")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class ChatController {
     private final ChatWebSocketHandler handler;
 
