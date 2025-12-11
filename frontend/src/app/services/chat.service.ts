@@ -9,14 +9,10 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   requestChat(targetUsername: { targetUsername: string }): Observable<string> {
-    return this.http.post(
-      'api/chat/request',
-      targetUsername,
-      {
-        responseType: 'text',
-        withCredentials: true,
-      },
-    );
+    return this.http.post('api/chat/request', targetUsername, {
+      responseType: 'text',
+      withCredentials: true,
+    });
   }
 
   getChatRequests(): Observable<string[]> {
@@ -43,13 +39,9 @@ export class ChatService {
   }
 
   acceptChat(targetUsername: { targetUsername: string }): Observable<string> {
-    return this.http.post(
-      'api/chat/accept',
-      targetUsername,
-      {
-        responseType: 'text',
-        withCredentials: true,
-      },
-    );
+    return this.http.post('api/chat/accept', targetUsername, {
+      responseType: 'text',
+      withCredentials: true,
+    });
   }
 }
