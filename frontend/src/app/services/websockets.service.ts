@@ -12,7 +12,7 @@ export class WebsocketsService {
 
   constructor() {
     this.socket$ = webSocket(
-      `ws://${fetch(environment.apiUrl)}/sockets/chatrequests`,
+      `ws://${environment.apiUrl}/sockets/chatrequests`,
     );
   }
 
