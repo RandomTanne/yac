@@ -11,9 +11,7 @@ export class WebsocketsService {
   private socket$: WebSocketSubject<WebsocketMessage>;
 
   constructor() {
-    this.socket$ = webSocket(
-      `ws://${environment.apiUrl}/sockets/chatrequests`,
-    );
+    this.socket$ = webSocket(`ws://${environment.apiUrl}/sockets/chatrequests`);
   }
 
   getMessages(): Observable<WebsocketMessage> {
