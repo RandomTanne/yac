@@ -1,0 +1,5 @@
+{$DOMAIN:localhost} {
+    reverse_proxy / {$FRONTEND:frontend:80}
+
+    reverse_proxy /api/* {$BACKEND:backend:8080}
+}
