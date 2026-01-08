@@ -17,7 +17,7 @@ export class AuthService {
       .post<{
         jwt: string;
         expiration: string;
-      }>('api/auth/signin', userDetails, {
+      }>('/api/auth/signin', userDetails, {
         responseType: 'json',
         withCredentials: true,
       })
@@ -35,7 +35,7 @@ export class AuthService {
 
   signup(userDetails: { password: string }): Observable<boolean> {
     return this.http
-      .post('api/auth/signup', userDetails, {
+      .post('/api/auth/signup', userDetails, {
         responseType: 'text',
       })
       .pipe(
