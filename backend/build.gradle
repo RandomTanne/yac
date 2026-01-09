@@ -5,7 +5,7 @@ plugins {
 	id 'com.diffplug.spotless' version '7.2.1'
     id "checkstyle"
     id "pmd"
-    id "com.github.spotbugs" version "6.0.22"
+    id "com.github.spotbugs" version "6.4.8"
 }
 
 group = 'ch.gibb'
