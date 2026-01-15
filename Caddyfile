@@ -1,12 +1,4 @@
 {$DOMAIN:localhost} {
-    @api path /api/*
-    reverse_proxy @api {$BACKEND:backend:8080}
-
-    @frontend not path /api/*
-    reverse_proxy @frontend {$FRONTEND:frontend:3000} {
-        header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-    }
+    reverse_proxy /api/* backend:8080
+    reverse_proxy /* frontend:3000
 }
