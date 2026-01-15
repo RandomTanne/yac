@@ -6,13 +6,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { jwtInterceptor } from './services/jwt-interceptor.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
-import { urlInterceptor } from './services/url-interceptor.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([jwtInterceptor, urlInterceptor])),
+    provideHttpClient(withInterceptors([jwtInterceptor])),
     provideAnimations(),
     provideToastr(),
   ],
