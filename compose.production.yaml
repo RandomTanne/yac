@@ -9,5 +9,10 @@ services:
     image: ghcr.io/randomtanne/yac/frontend:${FRONTEND_TAG:?error}
     restart: always
 
+  caddy:
+    env_file: .prod-env
+    image: ghcr.io/randomtanne/yac/caddy:${CADDY_TAG:?error}
+    restart: always
+
   postgres:
     env_file: .prod-env

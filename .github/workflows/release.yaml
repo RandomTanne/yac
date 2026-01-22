@@ -48,6 +48,8 @@ jobs:
             version-file: build.gradle
           - name: frontend
             version-file: package.json
+          - name: caddy
+            version-file: Caddyfile
 
     permissions:
       actions: none
