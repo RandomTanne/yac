@@ -2,8 +2,6 @@
 services:
   postgres:
     image: postgres:16
-    ports:
-      - 5432:5432
     env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -15,8 +13,6 @@ services:
 
   backend:
     build: ./backend
-    ports:
-      - 8080:8080
     env_file: .env
     depends_on:
       postgres:
@@ -24,8 +20,22 @@ services:
 
   frontend:
     build: ./frontend
+
+  caddy:
+    image: caddy:2.6-alpine
+    depends_on:
+      - frontend
+      - backend
+    env_file: .env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
     ports:
-      - 80:80
+      - "80:80"
+      - "443:443"
 
 volumes:
   postgres:
+  caddy_data:
+  caddy_config:

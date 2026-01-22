@@ -9,20 +9,20 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   requestChat(targetUsername: { targetUsername: string }): Observable<string> {
-    return this.http.post('api/chat/request', targetUsername, {
+    return this.http.post('/api/chat/request', targetUsername, {
       responseType: 'text',
       withCredentials: true,
     });
   }
 
   getChatRequests(): Observable<string[]> {
-    return this.http.get<string[]>('api/chat/requested', {
+    return this.http.get<string[]>('/api/chat/requested', {
       withCredentials: true,
     });
   }
 
   cancelChatRequests(): Observable<string> {
-    return this.http.post('api/chat/cancel', null, {
+    return this.http.post('/api/chat/cancel', null, {
       responseType: 'text',
       withCredentials: true,
     });
@@ -32,14 +32,14 @@ export class ChatService {
     targetUsername: string;
     message: string;
   }): Observable<string> {
-    return this.http.post('api/chat/send', messageDTO, {
+    return this.http.post('/api/chat/send', messageDTO, {
       responseType: 'text',
       withCredentials: true,
     });
   }
 
   acceptChat(targetUsername: { targetUsername: string }): Observable<string> {
-    return this.http.post('api/chat/accept', targetUsername, {
+    return this.http.post('/api/chat/accept', targetUsername, {
       responseType: 'text',
       withCredentials: true,
     });
