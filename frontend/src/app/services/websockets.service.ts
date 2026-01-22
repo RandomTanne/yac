@@ -10,7 +10,7 @@ export class WebsocketsService {
   private socket$: WebSocketSubject<WebsocketMessage>;
 
   constructor() {
-    this.socket$ = webSocket(`wss://${window.location}/sockets/chatrequests`);
+    this.socket$ = webSocket(`wss://${window.location.hostname}/sockets/chatrequests`);
   }
 
   getMessages(): Observable<WebsocketMessage> {
