@@ -22,7 +22,7 @@ services:
     build: ./frontend
 
   caddy:
-    build: .
+    build: ./caddy
     depends_on:
       - frontend
       - backend
